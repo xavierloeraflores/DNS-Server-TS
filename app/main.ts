@@ -8,10 +8,12 @@ udpSocket.on("message", (data: Buffer, remoteAddr: dgram.RemoteInfo) => {
         console.log(
             `Received data from ${remoteAddr.address}:${remoteAddr.port}`
         );
-        const response = createDNSHeader({
-            ID: 1234,
-            QR: true,
-        });
+        const response = Buffer.from(
+            createDNSHeader({
+                ID: 1234,
+                QR: true,
+            })
+        );
         udpSocket.send(response, remoteAddr.port, remoteAddr.address);
     } catch (e) {
         console.log(`Error sending data: ${e}`);
@@ -81,18 +83,18 @@ const createDNSHeader = ({
     const arCountLower = AR_COUNT & 0xff;
     const arCountHigher = (AR_COUNT >> 8) & 0xff;
 
-    byteArray[0] = idLower;
-    byteArray[1] = idHigher;
+    byteArray[0] = idHigher;
+    byteArray[1] = idLower;
     byteArray[2] = comboByteA;
     byteArray[3] = comboByteB;
-    byteArray[4] = qdCountLower;
-    byteArray[5] = qdCountHigher;
-    byteArray[6] = anCountLower;
-    byteArray[7] = anCountHigher;
-    byteArray[8] = nsCountLower;
-    byteArray[9] = nsCountHigher;
-    byteArray[10] = arCountLower;
-    byteArray[11] = arCountHigher;
+    byteArray[4] = qdCountHigher;
+    byteArray[5] = qdCountLower;
+    byteArray[6] = anCountHigher;
+    byteArray[7] = anCountLower;
+    byteArray[8] = nsCountHigher;
+    byteArray[9] = nsCountLower;
+    byteArray[10] = arCountHigher;
+    byteArray[11] = arCountLower;
 
     console.log(byteArray);
     return byteArray;
