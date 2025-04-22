@@ -132,6 +132,7 @@ enum QuestionClass {
  * @param name Requested Resource NAME - variable bytes
  * @param type Requested Resource TYPE - 2 bytes
  * @param classCode CLASS Code - 2 bytes
+ * @returns QuestionSectionBuffer - variable bytes
  */
 const createQuestionSectionBuffer = ({
   name,
@@ -142,6 +143,25 @@ const createQuestionSectionBuffer = ({
   type: QuestionType;
   classCode: QuestionClass;
 }) => {
+  const nameBuffer = createNameBuffer({ name });
+
+  const TypeAndClassCodeBuffer = createTypeAndClassCodeBuffer({
+    type,
+    classCode,
+  });
+  const QuestionSectionBuffer = Buffer.concat([
+    nameBuffer,
+    TypeAndClassCodeBuffer,
+  ]);
+
+  return QuestionSectionBuffer;
+};
+
+/**
+ * @param name Requested Resource NAME - variable bytes
+ * @returns NameBuffer - variable bytes
+ */
+function createNameBuffer({ name }: { name: string }) {
   // Domains may have multiple labels separated by a "."
   const labels = name.split(".");
   // Each label must then be added to the Requested Resource Name buffer
@@ -173,18 +193,8 @@ const createQuestionSectionBuffer = ({
   });
 
   nameBuffer[nameBuffer.length - 1] = 0x00; //Null Byte to terminate name labels sequence
-
-  const TypeAndClassCodeBuffer = createTypeAndClassCodeBuffer({
-    type,
-    classCode,
-  });
-  const QuestionSectionBuffer = Buffer.concat([
-    nameBuffer,
-    TypeAndClassCodeBuffer,
-  ]);
-
-  return QuestionSectionBuffer;
-};
+  return nameBuffer;
+}
 
 /**
  * @param type Requested Resource TYPE - 2 bytes
@@ -234,15 +244,20 @@ const createAnswerSectionBuffer = ({
   ttl: number;
   data: string;
 }) => {
-  const AnswerArrayBytes = new Uint8Array();
-
+  const NameBuffer = createNameBuffer({ name });
   const TypeAndClassCodeBuffer = createTypeAndClassCodeBuffer({
     type,
     classCode,
   });
+
+  const TTLBuffer = new Uint8Array();
+  const AnswerDataBuffer = new Uint8Array();
+
   const AnswerBuffer = Buffer.concat([
-    AnswerArrayBytes,
+    NameBuffer,
     TypeAndClassCodeBuffer,
+    TTLBuffer,
+    AnswerDataBuffer,
   ]);
   return AnswerBuffer;
 };
