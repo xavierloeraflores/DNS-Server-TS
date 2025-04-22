@@ -250,7 +250,7 @@ const createAnswerSectionBuffer = ({
     classCode,
   });
 
-  const TTLBuffer = new Uint8Array();
+  const TTLBuffer = createTTLBuffer({ ttl });
   const AnswerDataBuffer = new Uint8Array();
 
   const AnswerBuffer = Buffer.concat([
@@ -261,3 +261,16 @@ const createAnswerSectionBuffer = ({
   ]);
   return AnswerBuffer;
 };
+
+/**
+ * @param ttl Time To Live - 4 bytes
+ * @returns TTLBuffer - 4 bytes
+ */
+function createTTLBuffer({ ttl }: { ttl: number }) {
+  const TTLBuffer = new Uint8Array(4);
+  TTLBuffer[0] = (ttl >> 24) & 0xff;
+  TTLBuffer[1] = (ttl >> 16) & 0xff;
+  TTLBuffer[2] = (ttl >> 8) & 0xff;
+  TTLBuffer[3] = (ttl >> 0) & 0xff;
+  return TTLBuffer;
+}
