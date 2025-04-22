@@ -193,3 +193,30 @@ const createQuestionSectionBuffer = ({
 
   return QuestionSectionBuffer;
 };
+
+/**
+ *
+ * @param name Requested Resource NAME - variable bytes
+ * @param type Requested Resource TYPE - 2 bytes
+ * @param classCode CLASS Code - 2 bytes
+ * @param ttl Time To Live - 4 bytes
+ * @param data RData - variable bytes
+ */
+const createAnswerSectionBuffer = ({
+  name,
+  type,
+  classCode,
+  ttl,
+  data,
+}: {
+  name: string;
+  type: QuestionType;
+  classCode: QuestionClass;
+  ttl: number;
+  data: string;
+}) => {
+  const AnswerArrayBytes = new Uint8Array();
+
+  const AnswerBuffer = Buffer.from(AnswerArrayBytes);
+  return AnswerBuffer;
+};
