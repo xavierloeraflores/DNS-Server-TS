@@ -174,6 +174,30 @@ const createQuestionSectionBuffer = ({
 
   nameBuffer[nameBuffer.length - 1] = 0x00; //Null Byte to terminate name labels sequence
 
+  const TypeAndClassCodeBuffer = createTypeAndClassCodeBuffer({
+    type,
+    classCode,
+  });
+  const QuestionSectionBuffer = Buffer.concat([
+    nameBuffer,
+    TypeAndClassCodeBuffer,
+  ]);
+
+  return QuestionSectionBuffer;
+};
+
+/**
+ * @param type Requested Resource TYPE - 2 bytes
+ * @param classCode CLASS Code - 2 bytes
+ * @returns TypeAndClassCodeBuffer - 4 bytes
+ */
+function createTypeAndClassCodeBuffer({
+  type,
+  classCode,
+}: {
+  type: QuestionType;
+  classCode: QuestionClass;
+}) {
   //Create the buffer containing the Requested Resource Type & Class
   const highTypeByte = (type >> 8) & 0xff;
   const lowTypeByte = type & 0xff;
@@ -186,13 +210,8 @@ const createQuestionSectionBuffer = ({
     lowClassByte,
   ]);
 
-  const QuestionSectionBuffer = Buffer.concat([
-    nameBuffer,
-    TypeAndClassCodeBuffer,
-  ]);
-
-  return QuestionSectionBuffer;
-};
+  return TypeAndClassCodeBuffer;
+}
 
 /**
  *
@@ -217,6 +236,13 @@ const createAnswerSectionBuffer = ({
 }) => {
   const AnswerArrayBytes = new Uint8Array();
 
-  const AnswerBuffer = Buffer.from(AnswerArrayBytes);
+  const TypeAndClassCodeBuffer = createTypeAndClassCodeBuffer({
+    type,
+    classCode,
+  });
+  const AnswerBuffer = Buffer.concat([
+    AnswerArrayBytes,
+    TypeAndClassCodeBuffer,
+  ]);
   return AnswerBuffer;
 };
