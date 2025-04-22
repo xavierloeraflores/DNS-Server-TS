@@ -97,7 +97,6 @@ const createDNSHeaderBuffer = ({
   byteArray[10] = arCountHigher;
   byteArray[11] = arCountLower;
 
-  console.log(byteArray);
   const headerBuffer = Buffer.from(byteArray);
   return headerBuffer;
 };
@@ -192,6 +191,5 @@ const createQuestionSectionBuffer = ({
     TypeAndClassCodeBuffer,
   ]);
 
-  console.log(QuestionSectionBuffer);
   return QuestionSectionBuffer;
 };
