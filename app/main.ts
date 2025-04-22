@@ -8,19 +8,15 @@ udpSocket.on("message", (data: Buffer, remoteAddr: dgram.RemoteInfo) => {
         console.log(
             `Received data from ${remoteAddr.address}:${remoteAddr.port}`
         );
-        const response = Buffer.from(
-            createDNSHeader({
-                ID: 1234,
-                QR: true,
-            })
-        );
+        const response = createDNSHeaderBuffer({ID: 1234, QR: true})
+        
         udpSocket.send(response, remoteAddr.port, remoteAddr.address);
     } catch (e) {
         console.log(`Error sending data: ${e}`);
     }
 });
 
-const createDNSHeader = ({
+const createDNSHeaderBuffer = ({
     ID = 0, // Transaction ID | 16 bits
     QR = false, // Query Response Indicator | 1 bit
     OP_CODE = 0, // Operation Code | 4 bits
@@ -97,7 +93,8 @@ const createDNSHeader = ({
     byteArray[11] = arCountLower;
 
     console.log(byteArray);
-    return byteArray;
+    const headerBuffer =  Buffer.from(byteArray)
+    return headerBuffer
 };
 
 
