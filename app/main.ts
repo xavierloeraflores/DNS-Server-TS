@@ -8,7 +8,10 @@ udpSocket.on("message", (data: Buffer, remoteAddr: dgram.RemoteInfo) => {
         console.log(
             `Received data from ${remoteAddr.address}:${remoteAddr.port}`
         );
-        const response = createDNSHeaderBuffer({ID: 1234, QR: true})
+        const header = createDNSHeaderBuffer({ID: 1234, QR: true, QD_COUNT: 1})
+        const question = createQuestionSectionBuffer({name:"codecrafters.io", type: QuestionType.A, classCode: QuestionClass.IN})
+        const response = Buffer.concat([header, question ])
+        console.log({response})
         
         udpSocket.send(response, remoteAddr.port, remoteAddr.address);
     } catch (e) {
