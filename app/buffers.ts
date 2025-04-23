@@ -78,3 +78,23 @@ export function createNameBuffer({ name }: { name: string }) {
   nameBuffer[nameBuffer.length - 1] = 0x00; //Null Byte to terminate name labels sequence
   return nameBuffer;
 }
+
+/**
+ * @param num - number to be converted into an integer buffer
+ * @param bytes - the number of bytes in the integer buffer
+ * @returns IntegerBuffer - the resulting buffer
+ */
+export function createIntegerBuffer({
+  num,
+  bytes,
+}: {
+  num: number;
+  bytes: number;
+}) {
+  const IntegerBuffer = new Uint8Array(bytes);
+  for (let i = 0; i < bytes; i++) {
+    const offset = 8 * (bytes - (i + 1));
+    IntegerBuffer[i] = (num >> offset) & 0xff;
+  }
+  return IntegerBuffer;
+}
