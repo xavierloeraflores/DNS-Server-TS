@@ -1,10 +1,5 @@
 import * as dgram from "dgram";
 import { ResourceRecordClass, ResourceRecordType } from "./enums";
-import {
-  createTTLBuffer,
-  createNameBuffer,
-  createTypeAndClassCodeBuffer,
-} from "./buffers";
 import { buildHeaderBuffer } from "./header";
 import { buildQuestionBuffer } from "./question";
 
@@ -28,42 +23,3 @@ udpSocket.on("message", (data: Buffer, remoteAddr: dgram.RemoteInfo) => {
     console.log(`Error sending data: ${e}`);
   }
 });
-
-/**
- *
- * @param name Requested Resource NAME - variable bytes
- * @param type Requested Resource TYPE - 2 bytes
- * @param classCode CLASS Code - 2 bytes
- * @param ttl Time To Live - 4 bytes
- * @param data RData - variable bytes
- */
-const createAnswerSectionBuffer = ({
-  name,
-  type,
-  classCode,
-  ttl,
-  data,
-}: {
-  name: string;
-  type: ResourceRecordType;
-  classCode: ResourceRecordClass;
-  ttl: number;
-  data: string;
-}) => {
-  const NameBuffer = createNameBuffer({ name });
-  const TypeAndClassCodeBuffer = createTypeAndClassCodeBuffer({
-    type,
-    classCode,
-  });
-
-  const TTLBuffer = createTTLBuffer({ ttl });
-  const AnswerDataBuffer = new Uint8Array();
-
-  const AnswerBuffer = Buffer.concat([
-    NameBuffer,
-    TypeAndClassCodeBuffer,
-    TTLBuffer,
-    AnswerDataBuffer,
-  ]);
-  return AnswerBuffer;
-};
