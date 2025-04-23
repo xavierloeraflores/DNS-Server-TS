@@ -4,6 +4,7 @@ import {
   createTypeAndClassCodeBuffer,
   createTTLBuffer,
   createIntegerBuffer,
+  createIPV4Buffer,
 } from "./buffers";
 
 /**
@@ -38,7 +39,7 @@ export const buildAnswerBuffer = ({
 
   const TTLBuffer = createTTLBuffer({ ttl });
   const DataLengthBuffer = createIntegerBuffer({ num: length, bytes: 2 });
-  const AnswerDataBuffer = new Uint8Array();
+  const AnswerDataBuffer = createIPV4Buffer({ address: data });
 
   const AnswerBuffer = Buffer.concat([
     NameBuffer,

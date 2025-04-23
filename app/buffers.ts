@@ -98,3 +98,15 @@ export function createIntegerBuffer({
   }
   return IntegerBuffer;
 }
+
+/**
+ * @param address - IPV4 address as a string
+ * @returns IPV4Buffer - 4 bytes
+ */
+export function createIPV4Buffer({ address }: { address: string }) {
+  const IPV4Buffer = new Uint8Array(4);
+  address.split(".").forEach((octet, index) => {
+    IPV4Buffer[index] = parseInt(octet) & 0xff;
+  });
+  return IPV4Buffer;
+}
