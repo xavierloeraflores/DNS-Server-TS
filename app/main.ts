@@ -9,8 +9,8 @@ udpSocket.on("message", (data: Buffer, remoteAddr: dgram.RemoteInfo) => {
     const header = createDNSHeaderBuffer({ ID: 1234, QR: true, QD_COUNT: 1 });
     const question = createQuestionSectionBuffer({
       name: "codecrafters.io",
-      type: QuestionType.A,
-      classCode: QuestionClass.IN,
+      type: ResourceRecordType.A,
+      classCode: ResourceRecordClass.IN,
     });
     const response = Buffer.concat([header, question]);
     console.log({ response });
@@ -101,7 +101,7 @@ const createDNSHeaderBuffer = ({
   return headerBuffer;
 };
 
-enum QuestionType {
+enum ResourceRecordType {
   A = 1, //Host Address
   NS = 2, //Authoritative Name Server
   MD = 3, //Mail Destination
@@ -120,7 +120,7 @@ enum QuestionType {
   TXT = 16, //Text String
 }
 
-enum QuestionClass {
+enum ResourceRecordClass {
   IN = 1, //Internet
   CS = 2, //CSNET
   CH = 3, //Chaos
@@ -140,8 +140,8 @@ const createQuestionSectionBuffer = ({
   classCode,
 }: {
   name: string;
-  type: QuestionType;
-  classCode: QuestionClass;
+  type: ResourceRecordType;
+  classCode: ResourceRecordClass;
 }) => {
   const nameBuffer = createNameBuffer({ name });
 
@@ -205,8 +205,8 @@ function createTypeAndClassCodeBuffer({
   type,
   classCode,
 }: {
-  type: QuestionType;
-  classCode: QuestionClass;
+  type: ResourceRecordType;
+  classCode: ResourceRecordClass;
 }) {
   //Create the buffer containing the Requested Resource Type & Class
   const highTypeByte = (type >> 8) & 0xff;
@@ -239,8 +239,8 @@ const createAnswerSectionBuffer = ({
   data,
 }: {
   name: string;
-  type: QuestionType;
-  classCode: QuestionClass;
+  type: ResourceRecordType;
+  classCode: ResourceRecordClass;
   ttl: number;
   data: string;
 }) => {
