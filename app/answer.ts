@@ -3,6 +3,7 @@ import {
   createNameBuffer,
   createTypeAndClassCodeBuffer,
   createTTLBuffer,
+  createIntegerBuffer,
 } from "./buffers";
 
 /**
@@ -11,6 +12,7 @@ import {
  * @param type Requested Resource TYPE - 2 bytes
  * @param classCode CLASS Code - 2 bytes
  * @param ttl Time To Live - 4 bytes
+ * @param length RData Length - 2 bytes
  * @param data RData - variable bytes
  */
 export const buildAnswerBuffer = ({
@@ -18,12 +20,14 @@ export const buildAnswerBuffer = ({
   type,
   classCode,
   ttl,
+  length,
   data,
 }: {
   name: string;
   type: ResourceRecordType;
   classCode: ResourceRecordClass;
   ttl: number;
+  length: number;
   data: string;
 }) => {
   const NameBuffer = createNameBuffer({ name });
@@ -33,12 +37,14 @@ export const buildAnswerBuffer = ({
   });
 
   const TTLBuffer = createTTLBuffer({ ttl });
+  const DataLengthBuffer = createIntegerBuffer({ num: length, bytes: 2 });
   const AnswerDataBuffer = new Uint8Array();
 
   const AnswerBuffer = Buffer.concat([
     NameBuffer,
     TypeAndClassCodeBuffer,
     TTLBuffer,
+    DataLengthBuffer,
     AnswerDataBuffer,
   ]);
   return AnswerBuffer;
